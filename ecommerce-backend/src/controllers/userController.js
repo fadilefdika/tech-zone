@@ -26,12 +26,16 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const users = req.body; // Langsung ambil array dari req.body
   try {
-    const newUser = await prisma.user.create({
-      data: { name, email, password, role },
-    });
-    res.status(201).json(newUser);
+    const createdUsers = await Promise.all(
+      users.map(async ({ name, email, password, role }) => {
+        return await prisma.user.create({
+          data: { name, email, password, role },
+        });
+      })
+    );
+    res.status(201).json(createdUsers);
   } catch (error) {
     if (error.code === 'P2002' && error.meta.target.includes('email')) {
       res.status(400).json({ error: 'Email must be unique' });
