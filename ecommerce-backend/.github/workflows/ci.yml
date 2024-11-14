@@ -1,4 +1,4 @@
-name: CI for Express API with PostgreSQL
+name: Backend CI
 
 on:
   push:
@@ -37,9 +37,15 @@ jobs:
           node-version: '14'
 
       - name: Install dependencies
+        working-directory: ./ecommerce-backend
         run: npm install
 
+      - name: Run migrations
+        working-directory: ./ecommerce-backend
+        run: npx prisma migrate deploy
+
       - name: Run tests
+        working-directory: ./ecommerce-backend
         env:
           DATABASE_URL: postgresql://postgres:kalemeuy123@localhost:5433/ecommerce_db
         run: npm test
