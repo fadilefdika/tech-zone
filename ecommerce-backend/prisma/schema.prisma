@@ -41,7 +41,7 @@ model Product {
   id          Int         @id @default(autoincrement())
   name        String
   description String?
-  price       Decimal
+  price       Int
   stock       Int
   isAuction   Boolean     @default(false)
   categoryId  Int
@@ -65,8 +65,8 @@ model Category {
 model Auction {
   id         Int      @id @default(autoincrement())
   productId  Int      @unique
-  startPrice Decimal
-  currentBid Decimal
+  startPrice Int
+  currentBid Int
   endDate    DateTime
   product    Product  @relation(fields: [productId], references: [id])
   bids       Bid[]
@@ -80,7 +80,7 @@ model Bid {
   id        Int      @id @default(autoincrement())
   auctionId Int      
   userId    Int
-  amount    Decimal
+  amount    Int
   timestamp DateTime @default(now())
   auction   Auction  @relation(fields: [auctionId], references: [id])
   user      User     @relation("UserBids", fields: [userId], references: [id]) // Relasi balik ke User
@@ -92,7 +92,7 @@ model Bid {
 model Order {
   id          Int         @id @default(autoincrement())
   userId      Int
-  totalAmount Decimal
+  totalAmount Int
   status      OrderStatus @default(PENDING)
   orderItems  OrderItem[]
   createdAt   DateTime    @default(now())
@@ -113,7 +113,7 @@ model OrderItem {
   orderId   Int
   productId Int
   quantity  Int
-  price     Decimal
+  price     Int
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
 }
