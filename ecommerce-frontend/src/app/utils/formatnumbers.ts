@@ -1,5 +1,3 @@
-// utils/formatNumber.ts
-
 export function formatNumber(amount: number, isCurrency: boolean = false): string {
   if (isCurrency) {
     return amount.toLocaleString('id-ID', {

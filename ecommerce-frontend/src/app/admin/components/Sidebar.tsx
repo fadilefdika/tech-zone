@@ -7,7 +7,7 @@ import { FaUsers } from 'react-icons/fa';
 
 const Sidebar = () => {
   return (
-    <div className="w-1/6 bg-[#F7F8FC] min-h-max flex flex-col items-center shadow-sm rounded-3xl">
+    <div className="w-1/6 bg-white min-h-max flex flex-col items-center shadow-sm rounded-3xl">
       {/* Logo */}
       <div className="mt-6 text-lg font-bold text-gray-700">
         <span className="text-blue-500">My</span>Logo
