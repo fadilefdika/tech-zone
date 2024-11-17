@@ -8,8 +8,9 @@ import { MdPointOfSale } from 'react-icons/md';
 import Chart from './components/PieChart';
 import MonthlyChart from './components/LineChart';
 import DailyAuctionBarChart from './components/BarChart';
-import TopProductsTable from './components/TableProduct';
+import DataTableProduct from './components/TableProduct';
 import Header from '../components/Header';
+import { columns, data } from './data/columns';
 
 const chartData = [
   { name: 'Jan', revenue: 12000, sales: 1500 },
@@ -54,10 +55,10 @@ const DashboardPage = () => {
       <div className="mt-6 grid grid-cols-3 gap-6">
         {/* Card 1: Top Products (2/3 ukuran) */}
         <div className="col-span-2 bg-white py-6 px-8 rounded-lg shadow-md">
-          <h3 className="text-sm font-medium text-gray-600 mb-4">Rata-rata Jumlah Bid per Lelang</h3>
+          <h3 className="text-sm font-medium text-gray-600 mb-6">Top Produk hari ini</h3>
           <div className="h-[400px]">
             {/* Komponen tabel */}
-            <TopProductsTable />
+            <DataTableProduct columns={columns} data={data} />
           </div>
         </div>
 

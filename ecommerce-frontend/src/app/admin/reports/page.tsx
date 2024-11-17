@@ -4,33 +4,27 @@ import AdminLayout from '../components/AdminLayout';
 import React, { useState } from 'react';
 import PerformanceStats from './components/PerformanceStats';
 import Filters from '../components/Filter';
-import TransactionTable from './components/TransactionTables';
-import { today } from '@/app/utils/Today';
+import { DataTableTransaction } from './components/TransactionTables';
 import Header from '../components/Header';
+import { columns, data as dummyData } from './data/columns';
 
 interface FilterProps {
   startDate: string;
   endDate: string;
-  category: string;
+  status: string;
 }
 
-const ReportsPage = () => {
-  const dummyData = [
-    { id: 101, user: 'John Doe', total: 'Rp 2,000,000', date: '2024-11-12', status: 'PAID' },
-    { id: 102, user: 'Jane Smith', total: 'Rp 1,500,000', date: '2024-11-13', status: 'PENDING' },
-    { id: 103, user: 'Ali Yusuf', total: 'Rp 750,000', date: '2024-11-14', status: 'COMPLETED' },
-  ];
-
+const ReportsPage: React.FC = () => {
   const [filteredData, setFilteredData] = useState(dummyData);
 
   const handleFilterChange = (filters: FilterProps) => {
-    const { startDate, endDate, category } = filters;
+    const { startDate, endDate, status } = filters;
 
     const filtered = dummyData.filter((item) => {
-      const isDateInRange = (!startDate || item.date >= startDate) && (!endDate || item.date <= endDate);
-      const isCategoryMatch = !category || category === 'electronics'; // Dummy logic for category
+      const isDateInRange = (!startDate || new Date(item.date) >= new Date(startDate)) && (!endDate || new Date(item.date) <= new Date(endDate));
+      const isStatusMatch = !status || item.status.toLowerCase() === status.toLowerCase();
 
-      return isDateInRange && isCategoryMatch;
+      return isDateInRange && isStatusMatch;
     });
 
     setFilteredData(filtered);
@@ -46,7 +40,7 @@ const ReportsPage = () => {
       <Filters onFilterChange={handleFilterChange} />
 
       {/* Tabel Transaksi */}
-      <TransactionTable data={filteredData} />
+      <DataTableTransaction columns={columns} data={filteredData} />
     </AdminLayout>
   );
 };

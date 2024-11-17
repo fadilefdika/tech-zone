@@ -1,49 +1,61 @@
+'use client';
+
 import React from 'react';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 
-interface Transaction {
-  id: number;
-  user: string;
-  total: string;
-  date: string;
-  status: string;
+interface DataTableProps<TData> {
+  columns: ColumnDef<TData, unknown>[]; // Menggunakan generic type untuk fleksibilitas data
+  data: TData[];
 }
 
-interface TransactionTableProps {
-  data: Transaction[];
-}
+export function DataTableTransaction<TData>({ columns, data }: DataTableProps<TData>) {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
-const TransactionTable: React.FC<TransactionTableProps> = ({ data }) => {
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h3 className="text-lg font-bold text-gray-800 mb-4">Laporan Transaksi</h3>
-      <table className="table-auto w-full text-left border-collapse">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border-b px-4 py-2">ID Transaksi</th>
-            <th className="border-b px-4 py-2">Pengguna</th>
-            <th className="border-b px-4 py-2">Total</th>
-            <th className="border-b px-4 py-2">Tanggal</th>
-            <th className="border-b px-4 py-2">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {[
-            { id: 101, user: 'John Doe', total: 'Rp 2,000,000', date: '2024-11-12', status: 'PAID' },
-            { id: 102, user: 'Jane Smith', total: 'Rp 1,500,000', date: '2024-11-13', status: 'PENDING' },
-            { id: 103, user: 'Ali Yusuf', total: 'Rp 750,000', date: '2024-11-14', status: 'COMPLETED' },
-          ].map((transaction, index) => (
-            <tr key={index} className="hover:bg-gray-50">
-              <td className="border-b px-4 py-2">{transaction.id}</td>
-              <td className="border-b px-4 py-2">{transaction.user}</td>
-              <td className="border-b px-4 py-2">{transaction.total}</td>
-              <td className="border-b px-4 py-2">{transaction.date}</td>
-              <td className="border-b px-4 py-2">{transaction.status}</td>
-            </tr>
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
+              ))}
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-4">
+        <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+          Previous
+        </Button>
+        <span>
+          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+        </span>
+        <Button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+          Next
+        </Button>
+      </div>
     </div>
   );
-};
+}
 
-export default TransactionTable;
+export default DataTableTransaction;
