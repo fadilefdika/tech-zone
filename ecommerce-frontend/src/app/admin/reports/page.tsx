@@ -4,7 +4,7 @@ import AdminLayout from '../components/AdminLayout';
 import React, { useState } from 'react';
 import PerformanceStats from './components/PerformanceStats';
 import Filters from '../components/Filter';
-import { DataTableTransaction } from './components/TransactionTables';
+import DataTable from '../components/DataTable';
 import Header from '../components/Header';
 import { columns, data as dummyData } from './data/columns';
 
@@ -14,21 +14,16 @@ interface FilterProps {
   status: string;
 }
 
+const status = [
+  { value: 'ALL', label: 'Semua Status' },
+  { value: 'PAID', label: 'PAID' },
+  { value: 'PENDING', label: 'PENDING' },
+  { value: 'COMPLETED', label: 'COMPLETED' },
+  { value: 'CANCELLED', label: 'CANCELLED' },
+];
+
 const ReportsPage: React.FC = () => {
   const [filteredData, setFilteredData] = useState(dummyData);
-
-  const handleFilterChange = (filters: FilterProps) => {
-    const { startDate, endDate, status } = filters;
-
-    const filtered = dummyData.filter((item) => {
-      const isDateInRange = (!startDate || new Date(item.date) >= new Date(startDate)) && (!endDate || new Date(item.date) <= new Date(endDate));
-      const isStatusMatch = !status || item.status.toLowerCase() === status.toLowerCase();
-
-      return isDateInRange && isStatusMatch;
-    });
-
-    setFilteredData(filtered);
-  };
 
   return (
     <AdminLayout>
@@ -36,11 +31,11 @@ const ReportsPage: React.FC = () => {
 
       <PerformanceStats />
 
-      {/* Filter Laporan */}
-      <Filters onFilterChange={handleFilterChange} />
+      <div className="bg-white py-4 px-6 rounded-lg shadow-md">
+        <Filters isDate={true} setFilteredData={setFilteredData} dummyData={dummyData} titleStatus="Status" optionsStatus={status} />
 
-      {/* Tabel Transaksi */}
-      <DataTableTransaction columns={columns} data={filteredData} />
+        <DataTable columns={columns} data={filteredData} title="Laporan Transaksi" />
+      </div>
     </AdminLayout>
   );
 };

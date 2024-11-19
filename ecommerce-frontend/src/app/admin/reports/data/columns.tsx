@@ -20,16 +20,16 @@ export const columns: ColumnDef<Report>[] = [
     header: 'Name',
   },
   {
+    accessorKey: 'total',
+    header: 'Total',
+  },
+  {
     accessorKey: 'status',
     header: 'Status',
   },
   {
     accessorKey: 'date',
     header: 'Date',
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
   },
 ];
 
