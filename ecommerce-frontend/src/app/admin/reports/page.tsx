@@ -16,10 +16,10 @@ interface FilterProps {
 
 const status = [
   { value: 'ALL', label: 'Semua Status' },
-  { value: 'PAID', label: 'PAID' },
-  { value: 'PENDING', label: 'PENDING' },
-  { value: 'COMPLETED', label: 'COMPLETED' },
-  { value: 'CANCELLED', label: 'CANCELLED' },
+  { value: 'DIBAYAR', label: 'DIBAYAR' },
+  { value: 'MENUNGGU', label: 'MENUNGGU' },
+  { value: 'SELESAI', label: 'SELESAI' },
+  { value: 'DIBATALKAN', label: 'DIBATALKAN' },
 ];
 
 const ReportsPage: React.FC = () => {

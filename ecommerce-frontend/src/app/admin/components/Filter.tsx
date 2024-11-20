@@ -46,15 +46,9 @@ const Filters = <T extends { date?: string; status: string; category?: string }>
 
     const filtered = dummyData.filter((item) => {
       const itemDate = item.date || '';
-      console.log('Category in item:', item.category); // Debug nilai category dari item
-      console.log('Category filter:', category); // Debug nilai category dari filter
-
       const isDateInRange = !isDate || ((!startDate || new Date(itemDate) >= new Date(startDate)) && (!endDate || new Date(itemDate) <= new Date(endDate)));
-      const isStatusMatch = status === 'ALL' || !status || item.status.toLowerCase() === status.toLowerCase();
-      const isCategoryMatch = category === 'ALL' || !category || item.category?.toLocaleLowerCase() === category.toLowerCase();
-
-      console.log('Category Match:', isCategoryMatch); // Debug apakah kategori cocok
-
+      const isStatusMatch = status === 'SEMUA' || !status || item.status.toLowerCase() === status.toLowerCase();
+      const isCategoryMatch = category === 'SEMUA' || !category || item.category?.toLocaleLowerCase() === category.toLowerCase();
       return isDateInRange && isStatusMatch && isCategoryMatch;
     });
 

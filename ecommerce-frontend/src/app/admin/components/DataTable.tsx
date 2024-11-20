@@ -23,7 +23,7 @@ export function DataTable<TData>({ columns, data, title }: DataTableProps<TData>
   const totalPages = table.getPageCount();
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
+    <div className="bg-white shadow-lg rounded-lg p-6">
       <h3 className="text-lg font-bold text-black mb-4">{title}</h3>
 
       <Table className="w-full text-sm text-left text-gray-600">

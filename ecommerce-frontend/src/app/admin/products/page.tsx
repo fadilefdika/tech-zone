@@ -5,6 +5,8 @@ import Header from '../components/Header';
 import DataTable from '../components/DataTable';
 import { columns, data as dummyData } from '../products/data/columns';
 import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface FilterProps {
   startDate: string;
@@ -13,13 +15,13 @@ interface FilterProps {
 }
 
 const status = [
-  { value: 'ALL', label: 'Semua Status' },
+  { value: 'SEMUA', label: 'Semua Status' },
   { value: 'Aktif', label: 'Aktif' },
   { value: 'Tidak Aktif', label: 'Tidak Aktif' },
 ];
 
 const Category = [
-  { value: 'ALL', label: 'Semua Kategori' },
+  { value: 'SEMUA', label: 'Semua Kategori' },
   { value: 'elektronik', label: 'Elektronik' },
   { value: 'komputer', label: 'Komputer' },
   { value: 'gaming', label: 'Gaming' },
@@ -32,14 +34,26 @@ const Category = [
 
 const ProductsPage = () => {
   const [filteredData, setFilteredData] = useState(dummyData);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+
+    const lowercasedQuery = query.toLowerCase();
+    const newFilteredData = dummyData.filter((item) => item.name.toLowerCase().includes(lowercasedQuery));
+
+    setFilteredData(newFilteredData);
+  };
 
   return (
     <AdminLayout>
       <Header title="Produk" />
-
       <div className="bg-white py-4 px-6 rounded-lg shadow-md">
         <Filters isDate={false} setFilteredData={setFilteredData} dummyData={dummyData} titleStatus="Status Produk" optionsStatus={status} titleCategory="Kategori" optionsCategory={Category} />
-
+        <div className="flex flex-col gap-3 mb-4">
+          <Label htmlFor="search">Cari Produk</Label>
+          <Input type="text" placeholder="Cari Produk" className="w-2/4" value={searchQuery} onChange={(e) => handleSearch(e.target.value)} />
+        </div>
         <DataTable columns={columns} data={filteredData} title="Data Produk" />
       </div>
     </AdminLayout>
