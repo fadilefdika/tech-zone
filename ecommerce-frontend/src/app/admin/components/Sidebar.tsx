@@ -17,12 +17,9 @@ const Sidebar = () => {
 
   return (
     <div className="w-1/6 bg-white pt-2 pb-5 flex flex-col items-center shadow-md rounded-xl fixed top-5 left-5 overflow-auto border-r border-gray-200">
-      {/* Logo */}
       <div className="mt-6 text-lg font-bold text-gray-700">
         <span className="text-blue-500">My</span>Logo
       </div>
-
-      {/* Menu */}
       <div className="mt-6 w-full px-4">
         <p className="text-sm font-medium text-gray-400 tracking-wider">MENU</p>
         <ul className="flex flex-col w-full px-1 gap-3 mt-3">
