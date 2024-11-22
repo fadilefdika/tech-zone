@@ -6,7 +6,7 @@ const CardBlog = () => {
   return (
     <div>
       <Card className="rounded-lg shadow-lg bg-white overflow-hidden w-64">
-        <CardHeader className="flex items-center justify-center bg-[#D0ecff]">
+        <CardHeader className="flex items-center justify-center bg-biruMuda">
           <Image src="/product/tv.png" alt="Image Product" width={200} height={200} className="rounded-t-lg object-cover" />
         </CardHeader>
         <CardFooter className="flex flex-col items-start p-4 space-y-2">

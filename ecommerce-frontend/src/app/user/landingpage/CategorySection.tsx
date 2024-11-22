@@ -22,10 +22,10 @@ const CategorySection = () => {
         </ul>
       </div>
       <div className="flex gap-6">
-        <CardProduct />
-        <CardProduct />
-        <CardProduct />
-        <CardProduct />
+        <CardProduct isStar={false} isPrice={true} price={1500000} rating={0} imageUrl="/product/headset2.png" productName="Wireless Headphone" />
+        <CardProduct isStar={false} isPrice={true} price={1500000} rating={0} imageUrl="/product/headset2.png" productName="Wireless Headphone" />
+        <CardProduct isStar={false} isPrice={true} price={1500000} rating={0} imageUrl="/product/headset2.png" productName="Wireless Headphone" />
+        <CardProduct isStar={false} isPrice={true} price={1500000} rating={0} imageUrl="/product/headset2.png" productName="Wireless Headphone" />
       </div>
       <ButtonLandingPage teks="Jelajahi Semua Produk" />
     </div>

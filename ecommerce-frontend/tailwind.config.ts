@@ -14,6 +14,8 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
+        biruMuda: '#d0ecff',
+        biruTua: '#2b6c9a',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -57,5 +59,5 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar-hide')],
 } satisfies Config;

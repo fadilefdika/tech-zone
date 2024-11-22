@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import Header from './landingpage/HeaderSection';
+import Header from './NavbarSection';
 
 interface AdminLayoutProps {
   children: ReactNode;

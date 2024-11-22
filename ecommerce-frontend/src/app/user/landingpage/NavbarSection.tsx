@@ -40,8 +40,10 @@ const Header = () => {
           </ul>
         </nav>
         <div className="flex gap-4">
-          <Button className="px-6 py-2 bg-[#2b6c9a] text-white hover:bg-[#1f4e6f]">Login</Button>
-          <Button variant="outline" className="px-6 py-2 text-[#2b6c9a] border-[#2b6c9a] hover:bg-blue-100">
+          <Link href={'/user/dashboard'}>
+            <Button className="px-6 py-2 bg-biruTua text-white hover:bg-[#1f4e6f]">Login</Button>
+          </Link>
+          <Button variant="outline" className="px-6 py-2 text-biruTua border-biruTua hover:bg-blue-100">
             Register
           </Button>
         </div>
