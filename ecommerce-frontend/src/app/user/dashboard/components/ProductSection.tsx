@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import CardProduct from '../../components/CardProduct';
+import { cardProductData } from '../../data/CardProduct';
 
 const ProductSection = () => {
   return (
@@ -11,13 +12,9 @@ const ProductSection = () => {
       </div>
       <div className="overflow-x-auto scrollbar-hide">
         <div className="flex gap-6 w-max px-4">
-          <CardProduct isStar={true} isPrice={true} price={1000000} rating={4} imageUrl="/product/tv.png" productName="Smart TV" />
-          <CardProduct isStar={true} isPrice={true} price={1000000} rating={4} imageUrl="/product/tv.png" productName="Smart TV" />
-          <CardProduct isStar={true} isPrice={true} price={1000000} rating={4} imageUrl="/product/tv.png" productName="Smart TV" />
-          <CardProduct isStar={true} isPrice={true} price={1000000} rating={4} imageUrl="/product/tv.png" productName="Smart TV" />
-          <CardProduct isStar={true} isPrice={true} price={1000000} rating={4} imageUrl="/product/tv.png" productName="Smart TV" />
-          <CardProduct isStar={true} isPrice={true} price={1000000} rating={4} imageUrl="/product/tv.png" productName="Smart TV" />
-          <CardProduct isStar={true} isPrice={true} price={1000000} rating={4} imageUrl="/product/tv.png" productName="Smart TV" />
+          {cardProductData.map((item) => (
+            <CardProduct key={item.id} isStar={item.isStar} isPrice={item.isPrice} price={item.price} rating={item.rating} imageUrl={item.imageUrl} productName={item.productName} />
+          ))}
         </div>
       </div>
     </div>
