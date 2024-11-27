@@ -7,10 +7,8 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Model untuk Role (Admin, Seller, User)
 enum Role {
   ADMIN
-  SELLER
   USER
 }
 
@@ -21,9 +19,6 @@ model User {
   password  String
   role      Role
   profile   Profile?
-  auctions  Auction[] @relation("UserAuctions") 
-  products  Product[] @relation("UserProducts") 
-  bids      Bid[]     @relation("UserBids") 
   orders    Order[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -43,12 +38,8 @@ model Product {
   description String?
   price       Int
   stock       Int
-  isAuction   Boolean     @default(false)
   categoryId  Int
-  sellerId    Int
   category    Category    @relation(fields: [categoryId], references: [id])
-  seller      User        @relation("UserProducts", fields: [sellerId], references: [id]) 
-  auctions    Auction[]
   orderItems  OrderItem[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -60,33 +51,6 @@ model Category {
   products Product[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-}
-
-model Auction {
-  id         Int      @id @default(autoincrement())
-  productId  Int      @unique
-  startPrice Int
-  currentBid Int
-  endDate    DateTime
-  product    Product  @relation(fields: [productId], references: [id])
-  bids       Bid[]
-  sellerId   Int
-  seller     User     @relation("UserAuctions", fields: [sellerId], references: [id]) // Relasi balik ke User
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
-model Bid {
-  id        Int      @id @default(autoincrement())
-  auctionId Int      
-  userId    Int
-  amount    Int
-  timestamp DateTime @default(now())
-  auction   Auction  @relation(fields: [auctionId], references: [id])
-  user      User     @relation("UserBids", fields: [userId], references: [id]) // Relasi balik ke User
-  
-  @@index([auctionId])
-  @@index([userId])
 }
 
 model Order {

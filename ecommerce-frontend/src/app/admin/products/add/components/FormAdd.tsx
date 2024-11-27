@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Category } from '../../data/dataKategori';
 
 const AddProductForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -18,24 +19,30 @@ const AddProductForm: React.FC = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value, // Update the correct field based on the name
+      [name]: value,
+    });
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData({
+      ...formData,
+      [name]: value,
     });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form Data:', formData);
-    // Add submit logic here
   };
 
   return (
     <div className="mt-4 p-6 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">Add Product</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Product Name */}
+        {/* Nama Produk */}
         <div>
           <label className="block text-sm font-medium text-gray-700" htmlFor="productName">
-            Product Name
+            Nama Produk
           </label>
           <input
             type="text"
@@ -43,9 +50,9 @@ const AddProductForm: React.FC = () => {
             name="productName"
             value={formData.productName}
             onChange={handleInputChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-[5px] shadow-sm focus:ring-blue-500 focus:border-blue-500"
             placeholder="Masukkan Nama Produk"
-            aria-label="Product Name"
+            aria-label="Nama Produk"
             required
           />
         </div>
@@ -53,7 +60,7 @@ const AddProductForm: React.FC = () => {
         {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-700" htmlFor="description">
-            Description
+            Deskripsi
           </label>
           <textarea
             id="description"
@@ -61,7 +68,7 @@ const AddProductForm: React.FC = () => {
             value={formData.description}
             onChange={handleInputChange}
             rows={4}
-            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-[5px] shadow-sm focus:ring-blue-500 focus:border-blue-500"
             placeholder="Masukkan Deskripsi Produk"
             aria-label="Product Description"
           />
@@ -70,27 +77,26 @@ const AddProductForm: React.FC = () => {
         {/* Grid Inputs */}
         <div className="grid grid-cols-3 gap-4">
           {/* Category */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="category">
-              Category
-            </label>
-            <input
-              type="text"
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleInputChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Masukkan Kategori Produk"
-              aria-label="Product Category"
-              required
-            />
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="category">Kategori</Label>
+            <Select onValueChange={(value) => handleSelectChange('category', value)}>
+              <SelectTrigger id="category">
+                <SelectValue placeholder="Pilih Kategori" />
+              </SelectTrigger>
+              <SelectContent>
+                {Category.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Price */}
           <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="price">
-              Price
+              Harga
             </label>
             <input
               type="number"
@@ -98,7 +104,7 @@ const AddProductForm: React.FC = () => {
               name="price"
               value={formData.price}
               onChange={handleInputChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-[5px] shadow-sm focus:ring-blue-500 focus:border-blue-500"
               placeholder="Masukkan Harga Produk"
               aria-label="Product Price"
               required
@@ -108,7 +114,7 @@ const AddProductForm: React.FC = () => {
           {/* Stock */}
           <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="stock">
-              Stock
+              Stok barang
             </label>
             <input
               type="number"
@@ -116,7 +122,7 @@ const AddProductForm: React.FC = () => {
               name="stock"
               value={formData.stock}
               onChange={handleInputChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-[5px] shadow-sm focus:ring-blue-500 focus:border-blue-500"
               placeholder="Masukkan Stok Produk"
               aria-label="Product Stock"
               required
@@ -128,7 +134,7 @@ const AddProductForm: React.FC = () => {
           {/* Weight */}
           <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="weight">
-              Weight (kg)
+              Berat (kg)
             </label>
             <input
               type="number"
@@ -136,7 +142,7 @@ const AddProductForm: React.FC = () => {
               name="weight"
               value={formData.weight}
               onChange={handleInputChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-1 shadow-sm focus:ring-blue-500 focus:border-blue-500"
               placeholder="Masukkan Berat Produk"
               aria-label="Product Weight"
               required
@@ -148,7 +154,7 @@ const AddProductForm: React.FC = () => {
             <Label className="block text-sm font-medium text-gray-700" htmlFor="status">
               Status
             </Label>
-            <Select name="status" value={formData.status} onValueChange={(value) => handleInputChange({ target: { name: 'status', value } } as React.ChangeEvent<HTMLInputElement>)} aria-label="Product Status">
+            <Select value={formData.status} onValueChange={(value) => handleSelectChange('status', value)} aria-label="Product Status">
               <SelectTrigger className="mt-1 py-2 px-3">
                 <SelectValue placeholder="Select Status" />
               </SelectTrigger>
@@ -163,7 +169,7 @@ const AddProductForm: React.FC = () => {
         {/* Submit Button */}
         <div>
           <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-            Add Product
+            Tambah Produk
           </button>
         </div>
       </form>

@@ -3,36 +3,19 @@ import AdminLayout from '../components/AdminLayout';
 import Filters from '../components/Filter';
 import Header from '../components/Header';
 import DataTable from '../components/DataTable';
-import { columns, data as dummyData } from '../products/data/columns';
+import { columns, data as dummyData } from './data/columns';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { status, Category } from './data/dataKategori';
 
 interface FilterProps {
   startDate: string;
   endDate: string;
   status: string;
 }
-
-const status = [
-  { value: 'SEMUA', label: 'Semua Status' },
-  { value: 'Aktif', label: 'Aktif' },
-  { value: 'Tidak Aktif', label: 'Tidak Aktif' },
-];
-
-const Category = [
-  { value: 'SEMUA', label: 'Semua Kategori' },
-  { value: 'elektronik', label: 'Elektronik' },
-  { value: 'komputer', label: 'Komputer' },
-  { value: 'gaming', label: 'Gaming' },
-  { value: 'aksesoris', label: 'Aksesoris' },
-  { value: 'smart-home', label: 'Smart Home' },
-  { value: 'peralatan-kantor', label: 'Peralatan Kantor' },
-  { value: 'peralatan-pendukung-teknis', label: 'Peralatan Pendukung Teknis' },
-  { value: 'fotografi', label: 'Fotografi' },
-];
 
 const ProductsPage = () => {
   const [filteredData, setFilteredData] = useState(dummyData);

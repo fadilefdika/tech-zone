@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
+import Link from 'next/link'; // Import Link dari Next.js
 
 const Footer = () => {
   return (
@@ -57,6 +58,7 @@ const Footer = () => {
               </ul>
             </div>
           </div>
+
           <div className="flex flex-row gap-10">
             <div>
               <h1 className="text-lg font-semibold text-biruTua">Contact Us</h1>
@@ -69,17 +71,18 @@ const Footer = () => {
             <div className="mt-6">
               <h2 className="text-lg font-semibold mb-4 text-biruTua">Download the Application</h2>
               <div className="flex flex-row space-x-4">
-                <a href="#" className="hover:opacity-80 transition-opacity">
-                  <img src="/google-play.png" alt="Google Play" className="w-32 h-auto" />
-                </a>
-                <a href="#" className="hover:opacity-80 transition-opacity">
-                  <img src="/app-store.png" alt="App Store" className="w-32 h-auto" />
-                </a>
+                <Link href="#">
+                  <Image src="/google-play.png" alt="Google Play" className="w-32 h-auto hover:opacity-80 transition-opacity" width={128} height={40} />
+                </Link>
+                <Link href="#">
+                  <Image src="/app-store.png" alt="App Store" className="w-32 h-auto hover:opacity-80 transition-opacity" width={128} height={40} />
+                </Link>
               </div>
             </div>
           </div>
+
           <div>
-            <Image src={'/Logo Techzone.png'} alt="Logo" width={80} height={80} className={''} />
+            <Image src={'/Logo Techzone.png'} alt="Logo" width={80} height={80} />
           </div>
         </div>
       </div>

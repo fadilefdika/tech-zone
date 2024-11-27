@@ -136,7 +136,7 @@ export const data: Product[] = [
     name: 'Running Shoes',
     description: 'Lightweight running shoes for all-day comfort.',
     skuCode: 'RS890',
-    category: 'Aksesoris', // Tidak ada kategori "Footwear" dalam daftar Anda
+    category: 'Aksesoris',
     stock: 80,
     price: 59.99,
     status: 'Tidak Aktif',
@@ -169,7 +169,7 @@ export const data: Product[] = [
     name: 'Stainless Steel Water Bottle',
     description: 'Insulated water bottle keeps drinks hot or cold for hours.',
     skuCode: 'WB987',
-    category: 'Aksesoris', // Menggunakan kategori Aksesoris karena lebih umum
+    category: 'Aksesoris',
     stock: 70,
     price: 25.5,
     status: 'Tidak Aktif',

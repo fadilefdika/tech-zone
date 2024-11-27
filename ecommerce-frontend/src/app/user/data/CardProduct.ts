@@ -19,7 +19,7 @@ export const cardProductData = [
   },
   {
     id: 3,
-    isStar: false,
+    isStar: true,
     isPrice: true,
     price: 300000,
     rating: 3.5,
@@ -28,7 +28,7 @@ export const cardProductData = [
   },
   {
     id: 4,
-    isStar: false,
+    isStar: true,
     isPrice: true,
     price: 150000,
     rating: 4.2,

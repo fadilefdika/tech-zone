@@ -6,13 +6,13 @@ import { CardProductProps } from '../types/Card';
 
 const CardProduct: React.FC<CardProductProps> = ({ isStar, isPrice, price, rating, imageUrl, productName }) => {
   return (
-    <Card className="rounded-lg shadow-lg bg-white overflow-hidden w-64 hover:shadow-xl transition-shadow duration-300">
-      <CardHeader className="flex items-center justify-center bg-blue-100 h-44 w-full">
+    <Card className="rounded-lg shadow-lg bg-white overflow-hidden w-52 hover:shadow-xl transition-shadow duration-300">
+      <CardHeader className="flex items-center justify-center bg-blue-100 h-40 w-full">
         <Image src={imageUrl || '/placeholder.png'} alt={productName || 'Product Image'} width={150} height={150} className="rounded-t-lg object-cover" />
       </CardHeader>
 
-      <CardFooter className="flex flex-col items-start p-4 space-y-2">
-        <CardTitle className="text-xl font-semibold text-gray-900">{productName || 'Product Name'}</CardTitle>
+      <CardFooter className="flex flex-col items-start py-3 px-4 space-y-2">
+        <CardTitle className="text-base font-medium text-gray-900">{productName || 'Product Name'}</CardTitle>
         <CardDescription className="text-sm text-gray-500">Shop Now</CardDescription>
 
         {isStar && (
@@ -24,7 +24,7 @@ const CardProduct: React.FC<CardProductProps> = ({ isStar, isPrice, price, ratin
           </div>
         )}
 
-        {isPrice && <h2 className="text-lg font-semibold text-blue-600">Rp {price ? price.toLocaleString() : '0'}</h2>}
+        {isPrice && <h2 className="text-lg font-medium text-blue-600">Rp {price ? price.toLocaleString() : '0'}</h2>}
       </CardFooter>
     </Card>
   );
