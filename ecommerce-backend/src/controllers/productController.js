@@ -3,8 +3,25 @@ const prisma = new PrismaClient();
 
 const getProducts = async (req, res) => {
   try {
-    const products = await prisma.product.findMany();
-    res.json(products);
+    // Ambil semua produk beserta informasi kategori
+    const products = await prisma.product.findMany({
+      include: {
+        category: true, // Mengambil relasi category
+      },
+    });
+
+    // Menyusun data untuk response, ambil nama kategori dari relasi
+    const result = products.map((product) => ({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      status: product.status,
+      categoryId: product.category.name,
+    }));
+
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -24,18 +41,32 @@ const getProductById = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-  const { name, description, price, stock, categoryId, sellerId } = req.body;
-
+  const { name, description, price, stock, status, categoryId } = req.body;
   try {
+    const category = await prisma.category.findUnique({ where: { id: parseInt(categoryId) } });
+
+    if (!category) {
+      return res.status(400).json({ error: 'Kategori tidak ditemukan' });
+    }
+
     const newProduct = await prisma.product.create({
-      data: { name, description, price, stock, categoryId, sellerId },
+      data: {
+        name,
+        description,
+        price,
+        stock,
+        status,
+        categoryId,
+      },
     });
+
     res.status(201).json(newProduct);
   } catch (error) {
+    console.error('Error:', error);
     if (error.code === 'P2003') {
-      res.status(400).json({ error: 'Invalid categoryId or sellerId' });
+      return res.status(400).json({ error: 'Invalid categoryId' });
     } else {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: 'Terjadi kesalahan pada server', details: error.message });
     }
   }
 };

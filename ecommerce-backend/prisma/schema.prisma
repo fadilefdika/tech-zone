@@ -38,12 +38,14 @@ model Product {
   description String?
   price       Int
   stock       Int
+  status      String      @default("active") // Menambahkan status dengan default value
   categoryId  Int
   category    Category    @relation(fields: [categoryId], references: [id])
   orderItems  OrderItem[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
+
 
 model Category {
   id       Int       @id @default(autoincrement())

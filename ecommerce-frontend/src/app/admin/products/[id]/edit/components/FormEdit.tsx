@@ -1,114 +1,123 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Category } from '../../data/dataKategori';
+import { Category } from '../../../data/dataKategori';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProduct } from '@/redux/slice/productSlice'; // Pastikan path import sesuai dengan folder proyek
+import { updateProduct, getProductById, fetchProducts } from '@/redux/slice/productSlice';
 import { RootState } from '@/redux/store';
 import { Product } from '@/types/product';
 import { useToast } from '@/hooks/use-toast';
-import { redirect } from 'next/navigation';
-import { fetchProducts } from '@/redux/slice/productSlice';
+import { useRouter } from 'next/navigation';
 
-const AddProductForm: React.FC = () => {
+interface EditProductFormProps {
+  productId: number; // ID produk yang akan diedit
+}
+
+const EditProductForm: React.FC<EditProductFormProps> = ({ productId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { toast } = useToast();
-  const { status, error } = useSelector((state: RootState) => state.products); // Mendapatkan status dari Redux
-
+  const { status, error, items } = useSelector((state: RootState) => state.products);
   const [formData, setFormData] = useState({
+    id: 0,
     name: '',
     description: '',
     price: '',
     stock: '',
-    status: 'active', // Default status aktif
-    categoryId: '', // Ini akan menyimpan ID kategori yang terpilih
+    status: 'active',
+    categoryId: '',
+    sellerId: 0,
   });
 
-  // Fungsi untuk menangani perubahan input
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    if (name === 'price' || name === 'stock') {
+  const router = useRouter();
+
+  // Ambil data produk berdasarkan productId ketika komponen di-mount
+  useEffect(() => {
+    // Cek jika produk sudah ada di state
+    const product = items.find((product) => product.id === productId);
+    if (product) {
       setFormData({
-        ...formData,
-        [name]: value === '' ? '' : value, // Pastikan harga dan stok disimpan sebagai string kosong jika tidak diisi
+        ...product,
+        price: product.price.toString(),
+        stock: product.stock.toString(),
       });
     } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+      dispatch(getProductById(productId));
     }
+  }, [productId, items, dispatch]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   // Fungsi untuk menangani perubahan pada select (kategori dan status)
   const handleSelectChange = (name: string, value: string) => {
     setFormData({
       ...formData,
-      [name]: name === 'categoryId' ? value : value, // Pastikan categoryId tetap string
+      [name]: value,
     });
   };
-  // Fungsi untuk menangani submit form
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const selectedCategory = Category.find((category) => category.value === formData.categoryId);
     const categoryId = selectedCategory ? Category.findIndex((category) => category.value === formData.categoryId) : 0;
 
-    // Validasi data sebelum dikirim
     const price = parseFloat(formData.price);
     const stock = parseInt(formData.stock);
 
     if (isNaN(price) || isNaN(stock)) {
       console.error('Harga atau stok tidak valid');
-      return; // Jangan lanjutkan jika ada data yang tidak valid
+      return;
     }
 
     const productData: Product = {
-      name: formData.name,
-      description: formData.description,
+      ...formData,
       price,
       stock,
-      status: formData.status,
       categoryId,
     };
 
-    // Dispatch untuk create produk
-    dispatch(createProduct(productData)).then(() => {
-      // Setelah berhasil menambah produk, fetch ulang data produk terbaru
-      dispatch(fetchProducts());
+    // Dispatch untuk update produk
+    try {
+      await dispatch(updateProduct(productData)).unwrap();
       toast({
-        title: 'Produk berhasil ditambahkan',
-        description: 'Data produk Anda telah berhasil disimpan.',
+        title: 'Produk berhasil diperbarui',
+        description: 'Data produk Anda telah berhasil diperbarui.',
         duration: 4000,
         variant: 'default',
       });
 
-      // Redirect
-      redirect('/admin/products');
-    });
+      dispatch(fetchProducts());
+
+      router.push('/admin/products');
+    } catch (err) {
+      toast({
+        title: 'Gagal memperbarui produk',
+        description: 'Terjadi kesalahan saat memperbarui produk.',
+        duration: 4000,
+        variant: 'destructive',
+      });
+    }
   };
 
   if (status === 'loading') {
-    return (
-      <div className="mt-4 p-6 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Loading...</h2>
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
-  if (error) {
-    return (
-      <div className="mt-4 p-6 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Error: {error}</h2>
-      </div>
-    );
+  if (status === 'failed' && error) {
+    return <div>Error: {error}</div>;
   }
 
   return (
     <div className="mt-4 p-6 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">Add Product</h2>
+      <h2 className="text-2xl font-semibold mb-6 text-gray-800">Edit Produk</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Nama Produk */}
         <div>
@@ -220,7 +229,7 @@ const AddProductForm: React.FC = () => {
         {/* Submit Button */}
         <div>
           <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-            Tambah Produk
+            Perbarui Produk
           </button>
         </div>
       </form>
@@ -228,4 +237,4 @@ const AddProductForm: React.FC = () => {
   );
 };
 
-export default AddProductForm;
+export default EditProductForm;

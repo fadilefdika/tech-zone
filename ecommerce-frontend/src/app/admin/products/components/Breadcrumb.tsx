@@ -1,6 +1,10 @@
 import { Breadcrumb as BreadcrumbUI, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 
-const Breadcrumb = () => {
+interface Props {
+  name: string;
+}
+
+const Breadcrumb = ({ name }: Props) => {
   return (
     <BreadcrumbUI className="flex items-center text-sm text-gray-600">
       <BreadcrumbList className="flex items-center space-x-1">
@@ -13,7 +17,7 @@ const Breadcrumb = () => {
           <span className="text-gray-400 text-xl font-light">/</span>
         </BreadcrumbSeparator>
         <BreadcrumbItem>
-          <BreadcrumbPage className="font-medium text-black">Tambah Produk</BreadcrumbPage>
+          <BreadcrumbPage className="font-medium text-black">{name}</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </BreadcrumbUI>

@@ -6,8 +6,15 @@ const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const auctionRoutes = require('./routes/auctionRoutes');
 const bidRoutes = require('./routes/bidRoutes');
+const cors = require('cors');
 
 const app = express();
+
+app.use(
+  cors({
+    origin: '*',
+  })
+);
 
 app.use(express.json());
 
