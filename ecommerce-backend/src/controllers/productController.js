@@ -18,7 +18,7 @@ const getProducts = async (req, res) => {
       price: product.price,
       stock: product.stock,
       status: product.status,
-      categoryId: product.category.name,
+      categoryName: product.category.name,
     }));
 
     res.json(result);
@@ -34,6 +34,10 @@ const getProductById = async (req, res) => {
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
     }
+
+    const category = await prisma.category.findUnique({ where: { id: product.categoryId } });
+    product.categoryName = category.name;
+
     res.json(product);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -41,9 +45,13 @@ const getProductById = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-  const { name, description, price, stock, status, categoryId } = req.body;
+  const { name, description, price, stock, status, categoryName } = req.body;
   try {
-    const category = await prisma.category.findUnique({ where: { id: parseInt(categoryId) } });
+    const category = await prisma.category.findFirst({
+      where: {
+        name: categoryName,
+      },
+    });
 
     if (!category) {
       return res.status(400).json({ error: 'Kategori tidak ditemukan' });
@@ -56,7 +64,7 @@ const createProduct = async (req, res) => {
         price,
         stock,
         status,
-        categoryId,
+        categoryId: category.id,
       },
     });
 
@@ -64,7 +72,7 @@ const createProduct = async (req, res) => {
   } catch (error) {
     console.error('Error:', error);
     if (error.code === 'P2003') {
-      return res.status(400).json({ error: 'Invalid categoryId' });
+      return res.status(400).json({ error: 'Invalid category name' });
     } else {
       return res.status(500).json({ error: 'Terjadi kesalahan pada server', details: error.message });
     }
@@ -73,16 +81,41 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, stock, categoryId, sellerId } = req.body;
+  const { name, description, price, stock, status, categoryName } = req.body;
 
   try {
+    const existingProduct = await prisma.product.findUnique({ where: { id: parseInt(id) } });
+
+    if (!existingProduct) {
+      return res.status(404).json({ error: 'Produk tidak ditemukan' });
+    }
+
+    const category = await prisma.category.findFirst({
+      where: {
+        name: categoryName,
+      },
+    });
+
+    if (!category) {
+      return res.status(400).json({ error: 'Kategori tidak ditemukan' });
+    }
+
     const updatedProduct = await prisma.product.update({
       where: { id: parseInt(id) },
-      data: { name, description, price, stock, categoryId, sellerId },
+      data: {
+        name,
+        description,
+        price: parseFloat(price),
+        stock: parseInt(stock),
+        status,
+        categoryId: category.id,
+      },
     });
-    res.json(updatedProduct);
+
+    res.status(200).json(updatedProduct);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Terjadi kesalahan pada server', details: error.message });
   }
 };
 

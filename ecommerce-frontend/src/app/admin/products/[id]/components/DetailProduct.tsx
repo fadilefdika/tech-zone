@@ -36,7 +36,7 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
             </div>
             <div className="space-y-2">
               <p className="text-sm text-gray-600">Kategori</p>
-              <p className="text-xl font-medium text-gray-800">{product.categoryId}</p>
+              <p className="text-xl font-medium text-gray-800">{product.categoryName}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm text-gray-600">Deskripsi</p>

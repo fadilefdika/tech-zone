@@ -26,6 +26,8 @@ const ProductDetailPage = () => {
       console.log('Dispatching getProductById with ID:', id);
       dispatch(getProductById(Number(id)));
     }
+
+    console.log('products:', product);
   }, [dispatch]);
 
   // Menampilkan loading saat data produk sedang di-fetch

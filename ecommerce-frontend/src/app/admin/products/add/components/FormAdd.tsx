@@ -23,10 +23,9 @@ const AddProductForm: React.FC = () => {
     price: '',
     stock: '',
     status: 'active', // Default status aktif
-    categoryId: '', // Ini akan menyimpan ID kategori yang terpilih
+    categoryName: '', // Ini akan menyimpan ID kategori yang terpilih
   });
 
-  // Fungsi untuk menangani perubahan input
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (name === 'price' || name === 'stock') {
@@ -46,22 +45,28 @@ const AddProductForm: React.FC = () => {
   const handleSelectChange = (name: string, value: string) => {
     setFormData({
       ...formData,
-      [name]: name === 'categoryId' ? value : value, // Pastikan categoryId tetap string
+      [name]: name === 'categoryName' ? value : value, // Pastikan categoryName tetap string
     });
   };
   // Fungsi untuk menangani submit form
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const selectedCategory = Category.find((category) => category.value === formData.categoryId);
-    const categoryId = selectedCategory ? Category.findIndex((category) => category.value === formData.categoryId) : 0;
+    const selectedCategory = Category.find((category) => category.value === formData.categoryName);
+    console.log('ini selected category', selectedCategory);
+    const categoryName = selectedCategory ? selectedCategory.value : '';
+    console.log('ini category id', categoryName);
 
-    // Validasi data sebelum dikirim
     const price = parseFloat(formData.price);
     const stock = parseInt(formData.stock);
 
     if (isNaN(price) || isNaN(stock)) {
-      console.error('Harga atau stok tidak valid');
+      toast({
+        title: 'Input tidak valid',
+        description: 'Harga atau stok tidak valid. Mohon periksa kembali.',
+        duration: 4000,
+        variant: 'destructive',
+      });
       return; // Jangan lanjutkan jika ada data yang tidak valid
     }
 
@@ -71,13 +76,16 @@ const AddProductForm: React.FC = () => {
       price,
       stock,
       status: formData.status,
-      categoryId,
+      categoryName,
     };
 
-    // Dispatch untuk create produk
-    dispatch(createProduct(productData)).then(() => {
+    try {
+      // Dispatch untuk create produk
+      await dispatch(createProduct(productData)).unwrap();
+
       // Setelah berhasil menambah produk, fetch ulang data produk terbaru
-      dispatch(fetchProducts());
+      await dispatch(fetchProducts());
+
       toast({
         title: 'Produk berhasil ditambahkan',
         description: 'Data produk Anda telah berhasil disimpan.',
@@ -85,9 +93,17 @@ const AddProductForm: React.FC = () => {
         variant: 'default',
       });
 
-      // Redirect
       redirect('/admin/products');
-    });
+    } catch (err) {
+      // Menangani error jika produk gagal ditambahkan
+      console.error('Gagal menambahkan produk:', err);
+      toast({
+        title: 'Gagal menambahkan produk',
+        description: 'Terjadi kesalahan saat menambahkan produk. Coba lagi nanti.',
+        duration: 4000,
+        variant: 'destructive',
+      });
+    }
   };
 
   if (status === 'loading') {
@@ -149,9 +165,9 @@ const AddProductForm: React.FC = () => {
         <div className="grid grid-cols-3 gap-4">
           {/* Kategori */}
           <div className="flex flex-col gap-2">
-            <Label htmlFor="categoryId">Kategori</Label>
-            <Select value={formData.categoryId} onValueChange={(value) => handleSelectChange('categoryId', value)}>
-              <SelectTrigger id="categoryId">
+            <Label htmlFor="categoryName">Kategori</Label>
+            <Select value={formData.categoryName} onValueChange={(value) => handleSelectChange('categoryName', value)}>
+              <SelectTrigger id="categoryName">
                 <SelectValue placeholder="Pilih Kategori" />
               </SelectTrigger>
               <SelectContent>

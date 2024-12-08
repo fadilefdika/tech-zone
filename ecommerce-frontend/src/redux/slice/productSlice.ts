@@ -8,12 +8,14 @@ interface ProductState {
   items: Product[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
+  currentProduct: Product | null;
 }
 
 const initialState: ProductState = {
   items: [],
   status: 'idle',
   error: null,
+  currentProduct: null,
 };
 
 // Fetch all products
@@ -35,9 +37,21 @@ export const createProduct = createAsyncThunk<Product, Product>('products/create
 });
 
 // Update an existing product
-export const updateProduct = createAsyncThunk<Product, Product>('products/updateProduct', async (product) => {
-  const response = await axios.put(`${API_URL}/${product.id}`, product);
-  return response.data;
+export const updateProduct = createAsyncThunk<Product, { product: Product; productId: string }>('products/updateProduct', async ({ product, productId }) => {
+  try {
+    const response = await axios.put(`${API_URL}/${productId}`, product);
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to update product');
+  }
+});
+
+export const deleteProduct = createAsyncThunk<void, string>('products/deleteProduct', async (productId) => {
+  try {
+    await axios.delete(`${API_URL}/${productId}`);
+  } catch (error) {
+    throw new Error('Failed to delete product');
+  }
 });
 
 const productSlice = createSlice({
@@ -65,8 +79,7 @@ const productSlice = createSlice({
       })
       .addCase(getProductById.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        // You might want to do something with the single product here,
-        // like storing it in state or just using it in a component
+        state.currentProduct = action.payload;
       })
       .addCase(getProductById.rejected, (state, action) => {
         state.status = 'failed';
@@ -100,6 +113,20 @@ const productSlice = createSlice({
       .addCase(updateProduct.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to update product';
+      })
+
+      // Handling deleteProduct
+      .addCase(deleteProduct.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        const productId = action.meta.arg; // Get the productId from the action's meta
+        state.items = state.items.filter((item) => item.id !== Number(productId)); // Remove the product from the list
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Failed to delete product';
       });
   },
 });

@@ -21,7 +21,7 @@ export const columns: ColumnDef<Product>[] = [
     header: 'Deskripsi',
   },
   {
-    accessorKey: 'categoryId',
+    accessorKey: 'categoryName',
     header: 'Kategori',
   },
   {
@@ -42,7 +42,7 @@ export const columns: ColumnDef<Product>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const product = row.original;
-      const router = useRouter(); // useRouter from 'next/navigation'
+      const router = useRouter();
 
       const viewDetailProduct = () => {
         router.push(`/admin/products/${product.id}`);
