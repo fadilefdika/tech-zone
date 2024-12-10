@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal } from 'lucide-react';
-import { Product } from '@/types/product';
+import { Product } from '@/types/types';
 import { useRouter } from 'next/navigation'; // App Router
 
 export const columns: ColumnDef<Product>[] = [

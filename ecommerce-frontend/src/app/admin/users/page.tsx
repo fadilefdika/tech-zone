@@ -2,11 +2,12 @@
 import { useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import DataTable from '../components/DataTable';
-import Filters from '../components/Filter';
+import Filters from '../components/FilterProduct';
 import Header from '../components/Header';
 import { columns, data as dummyData } from '../users/data/columns';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import FilterUser from '../components/FilterUsers';
 
 const status = [
   { value: 'SEMUA', label: 'Semua Status' },
@@ -30,16 +31,18 @@ const UsersPage = () => {
 
   return (
     <AdminLayout>
-      <Header title="Pengguna" />
+      <div className="mb-6">
+        <Header title="Pengguna" />
+      </div>
 
-      <div className="bg-white py-4 px-6 rounded-lg shadow-md">
-        <Filters isDate={false} setFilteredData={setFilteredData} dummyData={dummyData} titleStatus="Status Pengguna" optionsStatus={status} />
+      <div className="bg-white py-4 px-6 rounded-lg shadow-md mb-6">
+        <FilterUser isDate={false} setFilteredData={setFilteredData} dummyData={dummyData} titleStatus="Status Pengguna" optionsStatus={status} />
         <div className="flex flex-col gap-3 mb-4">
           <Label htmlFor="search">Cari Pengguna</Label>
           <Input type="text" placeholder="Cari Pengguna" className="w-2/4" value={searchQuery} onChange={(e) => handleSearch(e.target.value)} />
         </div>
-        <DataTable columns={columns} data={filteredData} title="Data Produk" />
       </div>
+      <DataTable columns={columns} data={filteredData} title="Data Produk" />
     </AdminLayout>
   );
 };

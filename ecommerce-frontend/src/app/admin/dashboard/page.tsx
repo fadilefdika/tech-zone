@@ -1,3 +1,5 @@
+'use client';
+import { useEffect } from 'react';
 import React from 'react';
 import AdminLayout from '../components/AdminLayout';
 import Card from './components/Card';
@@ -10,7 +12,11 @@ import MonthlyChart from './components/LineChart';
 import DailyAuctionBarChart from './components/BarChart';
 import DataTableProduct from './components/TableProduct';
 import Header from '../components/Header';
-import { columns, data } from '../products/data/columns';
+import { columns } from '../products/data/columns';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { fetchProducts } from '@/redux/slice/productSlice';
+import LoadingSpinner2 from '@/app/components/LoadingSpiner';
 
 const chartData = [
   { name: 'Jan', revenue: 12000, sales: 1500 },
@@ -28,6 +34,20 @@ const chartData = [
 ];
 
 const DashboardPage = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const products = useSelector((state: RootState) => state.products.items);
+  const productStatus = useSelector((state: RootState) => state.products.status);
+  const error = useSelector((state: RootState) => state.products.error);
+
+  useEffect(() => {
+    if (productStatus === 'idle') {
+      dispatch(fetchProducts());
+    }
+  }, [dispatch, productStatus]);
+
+  if (productStatus === 'loading') return <LoadingSpinner2 />;
+  if (productStatus === 'failed') return <p>Error: {error}</p>;
+
   return (
     <AdminLayout>
       <Header title="Admin Dashboard" />
@@ -55,7 +75,7 @@ const DashboardPage = () => {
         <div className="col-span-2 bg-white py-6 px-8 rounded-lg shadow-md">
           <h3 className="text-sm font-medium text-gray-600 mb-6">Top Produk hari ini</h3>
           <div className="h-[400px]">
-            <DataTableProduct columns={columns} data={data} />
+            <DataTableProduct columns={columns} data={products} />
           </div>
         </div>
 

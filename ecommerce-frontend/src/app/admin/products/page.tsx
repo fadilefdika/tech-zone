@@ -1,7 +1,7 @@
 'use client';
 
 import AdminLayout from '../components/AdminLayout';
-import Filters from '../components/Filter';
+import Filters from '../components/FilterProduct';
 import Header from '../components/Header';
 import DataTable from '../components/DataTable';
 import { columns } from './data/columns';
@@ -14,12 +14,14 @@ import { status as statusOptions, Category } from './data/dataKategori';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '@/redux/slice/productSlice';
 import { AppDispatch, RootState } from '@/redux/store'; // Mengimpor RootState dan AppDispatch
+import FiltersProduct from '../components/FilterProduct';
+import LoadingSpinner2 from '@/app/components/LoadingSpiner';
 
 const ProductsPage = () => {
-  const dispatch = useDispatch<AppDispatch>(); // Mendeklarasikan tipe dispatch
-  const products = useSelector((state: RootState) => state.products.items); // Menambahkan RootState pada useSelector
-  const productStatus = useSelector((state: RootState) => state.products.status); // Menambahkan RootState pada useSelector
-  const error = useSelector((state: RootState) => state.products.error); // Menambahkan RootState pada useSelector
+  const dispatch = useDispatch<AppDispatch>();
+  const products = useSelector((state: RootState) => state.products.items);
+  const productStatus = useSelector((state: RootState) => state.products.status);
+  const error = useSelector((state: RootState) => state.products.error);
 
   const [filteredData, setFilteredData] = useState(products);
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,7 +32,7 @@ const ProductsPage = () => {
     }
   }, [dispatch, productStatus]);
 
-  if (productStatus === 'loading') return <p>Loading...</p>;
+  if (productStatus === 'loading') return <LoadingSpinner2 />;
   if (productStatus === 'failed') return <p>Error: {error}</p>;
 
   const handleSearch = (query: string) => {
@@ -42,10 +44,12 @@ const ProductsPage = () => {
 
   return (
     <AdminLayout>
-      <Header title="Produk" />
-      <div className="bg-white py-4 px-6 rounded-lg shadow-md">
+      <div className="mb-5">
+        <Header title="Produk" />
+      </div>
+      <div className="bg-white py-4 px-6 rounded-lg shadow-md mb-6">
         <div className="flex flex-row justify-between items-center">
-          <Filters isDate={false} setFilteredData={setFilteredData} data={products} titleStatus="Status Produk" optionsStatus={statusOptions} titleCategory="Kategori" optionsCategory={Category} />
+          <FiltersProduct isDate={false} setFilteredData={setFilteredData} data={products} titleStatus="Status Produk" optionsStatus={statusOptions} titleCategory="Kategori" optionsCategory={Category} />
           <Link href="/admin/products/add">
             <Button>Tambah Produk</Button>
           </Link>
@@ -55,9 +59,8 @@ const ProductsPage = () => {
           <Label htmlFor="search">Cari Produk</Label>
           <Input type="text" placeholder="Cari Produk" className="w-2/4" value={searchQuery} onChange={(e) => handleSearch(e.target.value)} />
         </div>
-
-        <DataTable columns={columns} data={filteredData} title="Data Produk" />
       </div>
+      <DataTable columns={columns} data={filteredData} title="Data Produk" />
     </AdminLayout>
   );
 };

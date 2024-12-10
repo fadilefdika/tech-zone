@@ -6,3 +6,11 @@ export interface Product {
   status: string;
   categoryName: string;
 }
+
+export interface Report {
+  id: number;
+  name: string;
+  total: number;
+  status: string;
+  date: string;
+}

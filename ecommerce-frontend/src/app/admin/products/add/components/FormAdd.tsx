@@ -7,10 +7,11 @@ import { AppDispatch } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct } from '@/redux/slice/productSlice'; // Pastikan path import sesuai dengan folder proyek
 import { RootState } from '@/redux/store';
-import { Product } from '@/types/product';
+import { Product } from '@/types/types';
 import { useToast } from '@/hooks/use-toast';
 import { redirect } from 'next/navigation';
 import { fetchProducts } from '@/redux/slice/productSlice';
+import LoadingSpinner2 from '@/app/components/LoadingSpiner';
 
 const AddProductForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -107,11 +108,7 @@ const AddProductForm: React.FC = () => {
   };
 
   if (status === 'loading') {
-    return (
-      <div className="mt-4 p-6 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Loading...</h2>
-      </div>
-    );
+    return <LoadingSpinner2 />;
   }
 
   if (error) {

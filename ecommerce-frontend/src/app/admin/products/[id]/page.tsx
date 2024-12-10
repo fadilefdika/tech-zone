@@ -10,6 +10,7 @@ import Breadcrumb from '../components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { AppDispatch, RootState } from '@/redux/store';
 import DetailProduct from './components/DetailProduct';
+import LoadingSpinner2 from '@/app/components/LoadingSpiner';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -28,19 +29,16 @@ const ProductDetailPage = () => {
     }
 
     console.log('products:', product);
-  }, [dispatch]);
+  }, [id, product, productStatus, dispatch]);
 
-  // Menampilkan loading saat data produk sedang di-fetch
   if (productStatus === 'loading') {
-    return <p>Loading...</p>;
+    return <LoadingSpinner2 />;
   }
 
-  // Menampilkan error jika terjadi kesalahan pengambilan data produk
   if (productStatus === 'failed') {
     return <p>Error: {error}</p>;
   }
 
-  // Jika produk tidak ditemukan setelah fetch, tampilkan pesan
   if (!product) {
     return <p>Produk tidak ditemukan</p>;
   }

@@ -9,10 +9,11 @@ import { updateProduct, getProductById, fetchProducts, deleteProduct } from '@/r
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { RootState } from '@/redux/store';
-import { Product } from '@/types/product';
+import { Product } from '@/types/types';
 import { useToast } from '@/hooks/use-toast';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import LoadingSpinner2 from '@/app/components/LoadingSpiner';
 
 const EditProductForm: React.FC = () => {
   const params = useParams();
@@ -30,7 +31,6 @@ const EditProductForm: React.FC = () => {
     status: 'active',
     categoryName: '',
   });
-  const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
     if (productId) {
@@ -137,11 +137,15 @@ const EditProductForm: React.FC = () => {
   };
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <LoadingSpinner2 />;
   }
 
   if (status === 'failed' && error) {
     return <div>Error: {error}</div>;
+  }
+
+  if (!currentProduct) {
+    return <div>Produk tidak ditemukan</div>;
   }
 
   return (

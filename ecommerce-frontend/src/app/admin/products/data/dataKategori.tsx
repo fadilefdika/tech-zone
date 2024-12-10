@@ -12,6 +12,6 @@ export const Category = [
   { value: 'aksesoris', label: 'Aksesoris' },
   { value: 'smart-home', label: 'Smart Home' },
   { value: 'peralatan-kantor', label: 'Peralatan Kantor' },
-  { value: 'peralatan-pendukung-teknis', label: 'Peralatan Pendukung Teknis' },
+  { value: 'peralatan-pendukung-teknik', label: 'Peralatan Pendukung Teknis' },
   { value: 'fotografi', label: 'Fotografi' },
 ];

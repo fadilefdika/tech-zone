@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button'; // Pastikan import Button sudah benar
-import { Product } from '@/types/product';
+import { Product } from '@/types/types';
 
 // Definisikan tipe data untuk product
 

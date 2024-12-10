@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Product } from '@/types/product';
+import { User } from '../users/data/columns';
 
 interface FilterProps {
   startDate?: string;
@@ -12,17 +12,15 @@ interface FilterProps {
   category?: string;
 }
 
-interface FiltersProps<T> {
+interface FiltersProps {
   isDate?: boolean;
   titleStatus: string;
-  optionsStatus: { value: string; label: string }[]; // Data untuk status
-  titleCategory?: string; // Judul kategori
-  optionsCategory?: { value: string; label: string }[]; // Opsi kategori tambahan
-  setFilteredData: (data: Product[]) => void; // Fungsi untuk set data yang sudah difilter
-  data?: Product[]; // Data yang akan difilter
+  optionsStatus: { value: string; label: string }[];
+  setFilteredData: (data: User[]) => void;
+  dummyData: User[];
 }
 
-const Filters = <T extends { date?: string; status: string; category?: string }>({ isDate = false, titleStatus, optionsStatus, titleCategory, optionsCategory = [], data = [], setFilteredData }: FiltersProps<T>) => {
+const FilterUser: React.FC<FiltersProps> = ({ isDate = false, titleStatus, optionsStatus, dummyData = [], setFilteredData }) => {
   const [filters, setFilters] = useState<FilterProps>({
     status: '',
     category: '',
@@ -31,7 +29,6 @@ const Filters = <T extends { date?: string; status: string; category?: string }>
 
   const [isClient, setIsClient] = useState(false);
 
-  // Perubahan filter untuk status dan kategori
   const handleChange = (name: keyof FilterProps, value: string) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
@@ -39,34 +36,31 @@ const Filters = <T extends { date?: string; status: string; category?: string }>
     }));
   };
 
-  // Fungsi untuk menangani perubahan filter
   const handleFilterChange = () => {
     const { startDate, endDate, status, category } = filters;
 
-    const filtered = data.filter((item) => {
-      // const itemDate = item.date || '';
-      // const isDateInRange = !isDate || ((!startDate || new Date(itemDate) >= new Date(startDate)) && (!endDate || new Date(itemDate) <= new Date(endDate)));
-      // const isStatusMatch = status === 'SEMUA' || !status || item.status.toLowerCase() === status.toLowerCase();
-      const isCategoryMatch = category === 'SEMUA' || !category;
+    const filtered = dummyData.filter((item) => {
+      const itemDate = item.createdAt || ''; // Menggunakan createdAt sesuai dengan interface User
+      const isDateInRange = !isDate || ((!startDate || new Date(itemDate) >= new Date(startDate)) && (!endDate || new Date(itemDate) <= new Date(endDate)));
 
-      return isCategoryMatch;
+      const isStatusMatch = status === 'SEMUA' || !status || item.status.toLowerCase() === status.toLowerCase();
+
+      return isDateInRange && isStatusMatch;
     });
 
     setFilteredData(filtered);
   };
 
-  // Mengupdate filter setiap kali terjadi perubahan
   useEffect(() => {
-    setIsClient(true); // Menandakan client-side sudah siap
+    setIsClient(true);
   }, []);
 
   useEffect(() => {
     if (isClient) {
-      handleFilterChange(); // Terapkan filter setelah client-side render selesai
+      handleFilterChange();
     }
-  }, [filters, data, isClient]); // Pastikan data sebagai dependency
+  }, [filters, dummyData, isClient]);
 
-  // Jangan render komponen ini sebelum client-side rendering selesai
   if (!isClient) {
     return null;
   }
@@ -101,26 +95,8 @@ const Filters = <T extends { date?: string; status: string; category?: string }>
           </SelectContent>
         </Select>
       </div>
-
-      {titleCategory && optionsCategory.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="category">{titleCategory}</Label>
-          <Select value={filters.category || ''} onValueChange={(value) => handleChange('category', value)}>
-            <SelectTrigger id="category">
-              <SelectValue placeholder="Pilih Kategori" />
-            </SelectTrigger>
-            <SelectContent>
-              {optionsCategory.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
     </div>
   );
 };
 
-export default Filters;
+export default FilterUser;
