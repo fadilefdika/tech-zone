@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Product } from '../../types/types';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import supabase from '@/utils/supabaseClient';
 dotenv.config();
 
 const API_URL = 'http://localhost:3001/api/products';
@@ -20,46 +21,6 @@ const initialState: ProductState = {
   currentProduct: null,
 };
 
-// export const uploadImage = createAsyncThunk<string, File>('products/uploadImage', async (file, { rejectWithValue }) => {
-//   try {
-//     console.log('Uploading file:', file); // Log untuk melihat file yang dikirim
-
-//     const formData = new FormData();
-//     formData.append('file', file);
-
-//     const response = await axios.post('http://localhost:3001/api/uploads', formData, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//       },
-//     });
-
-//     console.log('Server response:', response); // Log untuk melihat respons server
-
-//     // Periksa jika respons tidak sesuai yang diinginkan
-//     if (response.status !== 200) {
-//       console.error('Failed to upload image', response.status, response.statusText);
-//       return rejectWithValue('Error uploading image');
-//     }
-
-//     return response.data.url; // Pastikan server mengembalikan data yang tepat
-//   } catch (error: any) {
-//     console.error('Error during image upload:', error.message); // Log error jika terjadi
-//     if (error.response) {
-//       // Jika server merespons dengan status error
-//       console.error('Error response from server:', error.response.data);
-//     } else if (error.request) {
-//       // Jika tidak ada respons dari server
-//       console.error('No response received:', error.request);
-//     } else {
-//       // Jika kesalahan lain terjadi
-//       console.error('Error message:', error.message);
-//     }
-
-//     return rejectWithValue('Failed to upload image');
-//   }
-// });
-
-// Fetch all products
 export const fetchProducts = createAsyncThunk<Product[]>('products/fetchProducts', async () => {
   const response = await axios.get(API_URL);
   return response.data;
@@ -68,6 +29,7 @@ export const fetchProducts = createAsyncThunk<Product[]>('products/fetchProducts
 // Get a single product by ID
 export const getProductById = createAsyncThunk<Product, number>('products/getProductById', async (id) => {
   const response = await axios.get(`${API_URL}/${id}`);
+  // console.log('Fetched product by ID:', response.data);
   return response.data;
 });
 
@@ -91,26 +53,24 @@ const uploadImageToSupabase = async (imageFile: File): Promise<string> => {
 
     // Endpoint untuk upload file ke Supabase
     const url = `https://gyxztnnnudumbvwqkjkf.supabase.co/storage/v1/object/product-images/${imageFile.name}`;
-    console.log(url);
-    console.log('Supabase Anon Key:', process.env.SUPABASE_ANON_KEY);
+    console.log('Upload URL:', url);
+
     const uploadResponse = await axios.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
       },
     });
 
     console.log('Server response:', uploadResponse);
 
-    if (!uploadResponse.data || !uploadResponse.data.publicUrl) {
-      console.error('Error: Public URL not found in response');
-      throw new Error('Gagal mengunggah gambar: URL publik tidak ditemukan');
-    }
+    // Mendapatkan URL publik dari gambar yang baru diunggah
+    const { data } = supabase.storage.from('product-images').getPublicUrl(imageFile.name);
 
-    console.log('Image uploaded successfully. Public URL:', uploadResponse.data.publicUrl);
-    return uploadResponse.data.publicUrl;
+    console.log('Public URL:', data.publicUrl);
+
+    return data.publicUrl; // Mengembalikan URL publik gambar
   } catch (error: any) {
-    // Log detail error
     console.error('Error during image upload:', {
       message: error.message,
       response: error.response ? error.response.data : null,
@@ -122,11 +82,12 @@ const uploadImageToSupabase = async (imageFile: File): Promise<string> => {
   }
 };
 
+// Redux Thunk untuk membuat produk baru
 export const createProduct = createAsyncThunk<Product, { product: Product; imageFile: File | null }>('products/createProduct', async ({ product, imageFile }, { rejectWithValue }) => {
   try {
     let imageUrl = '';
 
-    // Jika ada file gambar, unggah ke Supabase atau backend
+    // Jika ada file gambar, unggah ke Supabase dan dapatkan URL
     if (imageFile) {
       imageUrl = await uploadImageToSupabase(imageFile);
     }
@@ -139,10 +100,12 @@ export const createProduct = createAsyncThunk<Product, { product: Product; image
     // Tambahkan URL gambar ke objek produk
     const newProduct = { ...product, imageUrl };
 
+    console.log('New Product:', newProduct); // Debugging
+
     // Kirim data produk ke backend
     const response = await axios.post('http://localhost:3001/api/products', newProduct);
 
-    return response.data; // Data produk yang berhasil disimpan
+    return response.data; // Mengembalikan data produk yang baru
   } catch (error: any) {
     console.error('Error creating product:', error.message);
     return rejectWithValue(error.response?.data || 'Gagal menambahkan produk');

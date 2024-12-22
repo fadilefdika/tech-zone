@@ -23,12 +23,13 @@ const ProductDetailPage = () => {
   const product = products.find((item) => item.id === Number(id));
 
   useEffect(() => {
-    if (id && !product && productStatus !== 'loading') {
-      // console.log('Dispatching getProductById with ID:', id);
+    if (id && productStatus !== 'loading' && !product) {
       dispatch(getProductById(Number(id)));
     }
 
-    // console.log('products:', product);
+    if (product) {
+      console.log('Product details:', product.imageUrl); // Cek apakah imageUrl sudah ada
+    }
   }, [id, product, productStatus, dispatch]);
 
   if (productStatus === 'loading') {

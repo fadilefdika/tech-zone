@@ -48,11 +48,7 @@ const getProductById = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-  const { name, description, price, stock, status, categoryName } = req.body;
-
-  if (!req.file) {
-    return res.status(400).json({ error: 'Product image is required' });
-  }
+  const { name, description, price, stock, status, categoryName, imageUrl } = req.body;
 
   // Validasi harga dan stok
   const parsedPrice = parseFloat(price);
@@ -66,21 +62,35 @@ const createProduct = async (req, res) => {
     return res.status(400).json({ error: 'Invalid stock' });
   }
 
-  const filePath = path.join(__dirname, '../../uploads', req.file.filename);
+  // Jika tidak ada file gambar, gunakan imageUrl yang diterima
+  let finalImageUrl = imageUrl;
+
+  if (!finalImageUrl) {
+    // Jika imageUrl tidak ada, maka wajib mengunggah gambar
+    if (!req.file) {
+      return res.status(400).json({ error: 'Product image is required' });
+    }
+
+    const filePath = path.join(__dirname, '../../uploads', req.file.filename);
+
+    try {
+      // Upload gambar ke Supabase
+      finalImageUrl = await uploadImageToSupabase(filePath, req.file.filename);
+
+      // Hapus file lokal setelah diunggah
+      await fs.unlink(filePath);
+    } catch (error) {
+      console.error('Error uploading image:', error.message);
+      return res.status(500).json({ error: 'Failed to upload image' });
+    }
+  }
 
   try {
-    // Upload gambar ke Supabase
-    const imageUrl = await uploadImageToSupabase(filePath, req.file.filename);
-
-    // Hapus file lokal setelah diunggah
-    await fs.unlink(filePath);
-
     // Cek kategori
-    const category = await prisma.category.findUnique({ where: { name: categoryName } });
+    const category = await prisma.category.findFirst({ where: { name: categoryName } });
     if (!category) {
       return res.status(400).json({ error: 'Category not found' });
     }
-
     // Simpan produk
     const newProduct = await prisma.product.create({
       data: {
@@ -90,7 +100,7 @@ const createProduct = async (req, res) => {
         stock: parsedStock,
         status,
         categoryId: category.id,
-        imageUrl,
+        imageUrl: finalImageUrl, // Menggunakan imageUrl yang sudah diperoleh
       },
     });
 
