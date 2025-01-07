@@ -1,12 +1,36 @@
 // redux/store.ts
 import { configureStore } from '@reduxjs/toolkit';
-import productReducer from './slice/productSlice'; // Pastikan path sesuai dengan file Anda
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // Menggunakan localStorage sebagai default storage
+import productReducer from './slice/productSlice'; // Pastikan path sesuai
+import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 
+// Konfigurasi persist
+const persistConfig = {
+  key: 'root',
+  storage,
+  blacklist: ['temporaryData'], // State yang tidak ingin dipersist
+};
+
+// Persisted reducer
+const persistedReducer = persistReducer(persistConfig, productReducer);
+
+// Buat store dengan middleware untuk mengabaikan peringatan serializability
 const store = configureStore({
   reducer: {
-    products: productReducer, // Ganti sesuai dengan reducer yang Anda gunakan
+    products: persistedReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Abaikan action redux-persist agar tidak memunculkan peringatan
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
+
+// Untuk persist store
+export const persistor = persistStore(store);
 
 export default store;
 

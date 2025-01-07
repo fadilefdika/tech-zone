@@ -28,7 +28,7 @@ const ProductDetailPage = () => {
     }
 
     if (product) {
-      console.log('Product details:', product.imageUrl); // Cek apakah imageUrl sudah ada
+      console.log('Product details:', product); // Cek apakah imageUrl sudah ada
     }
   }, [id, product, productStatus, dispatch]);
 

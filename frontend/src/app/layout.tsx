@@ -3,9 +3,10 @@
 
 import { Provider } from 'react-redux';
 import './globals.css';
-import store from '@/redux/store';
+import store, { persistor } from '@/redux/store';
 import { ReactNode } from 'react';
 import { Toaster } from '@/components/ui/toaster';
+import { PersistGate } from 'redux-persist/integration/react';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -18,7 +19,9 @@ export default function Layout({ children }: { children: ReactNode }) {
         </head>
         <body>
           <Provider store={store}>
-            <main>{children}</main>
+            <PersistGate loading={null} persistor={persistor}>
+              <main>{children}</main>
+            </PersistGate>
             <Toaster />
           </Provider>
         </body>
