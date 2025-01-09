@@ -9,7 +9,7 @@ const getProducts = async (req, res) => {
     // Ambil semua produk beserta informasi kategori
     const products = await prisma.product.findMany({
       include: {
-        category: true, // Mengambil relasi category
+        category: true,
       },
     });
 
@@ -22,6 +22,7 @@ const getProducts = async (req, res) => {
       stock: product.stock,
       status: product.status,
       categoryName: product.category.name,
+      imageUrl: product.imageUrl,
     }));
 
     res.json(result);

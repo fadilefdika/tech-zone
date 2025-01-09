@@ -13,16 +13,16 @@ const DetailProduct: React.FC<DetailProductProps> = ({ product }) => {
     <div className="mt-6 w-full mx-auto p-6 bg-white rounded-lg shadow-lg">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Gambar Produk */}
-        {/* <div className="flex-shrink-0 w-full lg:w-1/3">
+        <div className="flex-shrink-0 w-full lg:w-1/3">
           <img
             src={product.imageUrl} // Asumsi produk memiliki URL gambar
             alt={product.name}
             className="w-full h-64 object-cover rounded-lg shadow-md"
           />
-        </div> */}
-        <div className="flex-shrink-0 w-full lg:w-1/3">
-          <div className="w-full h-64 object-cover rounded-lg shadow-md bg-gray-600"></div>
         </div>
+        {/* <div className="flex-shrink-0 w-full lg:w-1/3">
+          <div className="w-full h-64 object-cover rounded-lg shadow-md bg-gray-600"></div>
+        </div> */}
 
         {/* Detail Produk */}
         <div className="flex-1">

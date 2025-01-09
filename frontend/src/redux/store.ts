@@ -2,7 +2,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // Menggunakan localStorage sebagai default storage
-import productReducer from './slice/productSlice'; // Pastikan path sesuai
+import productReducer from './slice/productSlice';
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 
 // Konfigurasi persist
