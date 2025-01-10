@@ -88,6 +88,7 @@ const EditProductForm: React.FC = () => {
       stock,
       status: formData.status,
       categoryName,
+      imageUrl: '',
     };
 
     try {

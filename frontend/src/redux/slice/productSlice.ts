@@ -29,7 +29,6 @@ export const fetchProducts = createAsyncThunk<Product[]>('products/fetchProducts
 // Get a single product by ID
 export const getProductById = createAsyncThunk<Product, number>('products/getProductById', async (id) => {
   const response = await axios.get(`${API_URL}/${id}`);
-  console.log('Fetched product by ID:', response.data);
   return response.data;
 });
 
@@ -174,7 +173,6 @@ const productSlice = createSlice({
         state.status = 'failed';
         state.error = (action.payload as string) || action.error.message || 'Failed to save product';
       })
-
       // Handling updateProduct
       .addCase(updateProduct.pending, (state) => {
         state.status = 'loading';

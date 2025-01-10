@@ -2,46 +2,35 @@
 
 import { useParams } from 'next/navigation';
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getProductById } from '@/redux/slice/productSlice';
 import AdminLayout from '../../components/AdminLayout';
 import Header from '../../components/Header';
 import Breadcrumb from '../components/Breadcrumb';
-import { AppDispatch, RootState } from '@/redux/store';
 import DetailProduct from './components/DetailProduct';
-import LoadingSpinner2 from '@/app/components/LoadingSpiner';
+import { useGetProductByIdQuery } from '@/redux/service/productApi';
 
 const ProductDetailPage = () => {
-  const { id } = useParams(); // Mengambil ID dari URL
+  const { id } = useParams();
   const numericId = id ? Number(id) : null;
 
-  const dispatch = useDispatch<AppDispatch>();
-
-  // Mendapatkan state produk dari Redux
-  const { currentProduct, status, error } = useSelector((state: RootState) => state.products);
-
-  useEffect(() => {
-    if (numericId) {
-      dispatch(getProductById(numericId));
-    }
-  }, [dispatch, numericId]);
-
-  // Menampilkan pesan jika ID tidak valid
-  if (!numericId || isNaN(numericId)) {
-    return <p>ID produk tidak valid</p>;
+  // Return early if the ID is invalid (null or NaN)
+  if (numericId === null || isNaN(numericId)) {
+    return <p>Produk tidak ditemukan</p>;
   }
 
-  // Menampilkan spinner saat data sedang dimuat
-  if (status === 'loading') {
-    return <LoadingSpinner2 />;
+  // Fetch product details using RTK Query hook
+  const { data: currentProduct, error, isLoading } = useGetProductByIdQuery(numericId);
+
+  // Handle loading state
+  if (isLoading) {
+    return <p>Loading...</p>;
   }
 
-  // Menampilkan pesan error jika ada
-  if (status === 'failed') {
-    return <p>Error: {error || 'Gagal memuat produk.'}</p>;
+  // Handle error state
+  if (error) {
+    return <p>Error fetching product data</p>;
   }
 
-  // Menampilkan pesan jika produk tidak ditemukan
+  // Handle case when product is not found
   if (!currentProduct) {
     return <p>Produk tidak ditemukan</p>;
   }
